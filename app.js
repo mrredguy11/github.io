@@ -73,7 +73,7 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
 (async () => {
   const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LON}&hourly=pm10,pm2_5&timezone=auto`;
   const r = await fetch(url); const d = await r.json();
-  const idx = d.hourly.time.length - 1;
+  const idx = Math.max(0, d.hourly.time.length - 3); 
   document.getElementById('pm25').textContent = Math.round(d.hourly.pm2_5[idx] ?? 0);
   document.getElementById('pm10').textContent = Math.round(d.hourly.pm10[idx] ?? 0);
 })().catch(console.error);
