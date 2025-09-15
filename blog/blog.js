@@ -1,104 +1,119 @@
-// blog.js — feed + single post with frontmatter support
+// Robust blog loader: works on Live Server and GitHub Pages.
+// - Feed: /blog/
+// - Single post: /blog/?p=slug  OR  /blog/#/slug
 
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const res = await fetch("posts/posts.json", { cache: "no-store" });
-    const posts = await res.json();
-    const params = new URLSearchParams(location.search);
-    const slug = params.get("p");
+const FEED_EL = document.getElementById('feed');
+const POST_EL = document.getElementById('post');
+const TITLE_EL = document.getElementById('post-title');
+const DATE_EL  = document.getElementById('post-date');
+const TAGS_EL  = document.getElementById('post-tags');
+const HERO_EL  = document.getElementById('post-hero');
+const CONTENT_EL = document.getElementById('post-content');
 
-    if (slug) {
-      await showPost(slug, posts);
-    } else {
-      showFeed(posts);
-    }
-  } catch (e) {
-    console.error("Blog load error", e);
-    const feedEl = document.getElementById("feed");
-    if (feedEl) feedEl.innerHTML = `<p>Couldn’t load posts.</p>`;
+const POSTS_DIR = 'posts';
+const POSTS_JSON = `${POSTS_DIR}/posts.json`;
+
+// Helpers
+const html = String.raw;
+const esc = (s) => (s == null ? '' : String(s));
+
+function getSlugFromURL() {
+  const usp = new URLSearchParams(location.search);
+  let slug = usp.get('p');
+  if (!slug && location.hash.startsWith('#/')) {
+    slug = decodeURIComponent(location.hash.slice(2));
   }
-});
+  return slug;
+}
 
-function showFeed(posts){
-  const feedEl = document.getElementById("feed");
-  const postEl = document.getElementById("post");
-  if (postEl) postEl.style.display = "none";
-  if (!feedEl) return;
+async function fetchJSON(url) {
+  const r = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+  if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+  return r.json();
+}
 
-  posts.sort((a,b)=> new Date(b.date) - new Date(a.date));
+async function fetchText(url) {
+  const r = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
+  if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+  return r.text();
+}
 
-  feedEl.innerHTML = posts.map(p => `
+function renderFeed(posts) {
+  POST_EL.style.display = 'none';
+  FEED_EL.style.display = 'grid';
+
+  // newest first by date (YYYY-MM-DD or ISO)
+  posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  FEED_EL.innerHTML = posts.map(p => html`
     <article class="post-card">
-      <h3><a href="?p=${encodeURIComponent(p.slug)}">${escapeHtml(p.title)}</a></h3>
-      <p class="muted">${formatDate(p.date)}</p>
-      ${Array.isArray(p.tags) ? p.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join(" ") : ""}
-      ${p.hero_image ? `<img class="thumb" src="${p.hero_image}" alt="" style="max-width:100%;margin-top:8px;border-radius:10px;border:1px solid var(--edge)">` : ""}
-      <p>${escapeHtml(p.summary || "")}</p>
+      <h3><a href="./?p=${encodeURIComponent(p.slug)}">${esc(p.title)}</a></h3>
+      <p class="muted">${dayjs(p.date).format('YYYY-MM-DD')}${p.tags?.length ? ' • ' + p.tags.join(', ') : ''}</p>
+      ${p.hero_image ? `<img src="${esc(p.hero_image)}" alt="" style="width:100%;border:1px solid var(--edge);border-radius:10px;margin:8px 0;"/>` : ''}
+      <p>${esc(p.summary || '')}</p>
+      <p><a class="link" href="./?p=${encodeURIComponent(p.slug)}">Read →</a></p>
     </article>
-  `).join("");
+  `).join('');
 }
 
-async function showPost(slug, manifest){
-  const feedEl = document.getElementById("feed");
-  const postEl = document.getElementById("post");
-  if (feedEl) feedEl.style.display = "none";
-  if (postEl) postEl.style.display = "block";
+function renderPostMeta(post) {
+  TITLE_EL.textContent = post.title || 'Untitled';
+  DATE_EL.textContent = dayjs(post.date).format('YYYY-MM-DD');
 
-  const meta = manifest.find(p=>p.slug===slug) || { title: slug };
+  TAGS_EL.innerHTML = (post.tags || [])
+    .map(t => `<span class="tag">${esc(t)}</span>`).join('');
 
-  const r = await fetch(`posts/${slug}.md`, { cache: "no-store" });
-  const raw = await r.text();
+  HERO_EL.innerHTML = post.hero_image
+    ? `<img src="${esc(post.hero_image)}" alt="${esc(post.title)}" />`
+    : '';
+}
 
-  const { fm, body } = parseFrontmatter(raw);
-
-  const title = fm.title || meta.title || slug;
-  const date = fm.date || meta.date || "";
-  const tags = fm.tags || meta.tags || [];
-  const hero = fm.hero_image || meta.hero_image || "";
-
-  document.getElementById("post-title").textContent = title;
-  document.getElementById("post-date").textContent = date ? formatDate(date) : "";
-  document.getElementById("post-tags").innerHTML = Array.isArray(tags) ? tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join("") : "";
-  document.getElementById("post-hero").innerHTML = hero ? `<img src="${hero}" alt="">` : "";
-
-  // markdown render
-  const contentEl = document.getElementById("post-content");
-  if (window.marked) {
-    marked.setOptions({ gfm:true, breaks:true });
-    contentEl.innerHTML = marked.parse(body || "");
-  } else {
-    contentEl.innerHTML = `<pre>${escapeHtml(body || "")}</pre>`;
+async function renderPost(slug, posts) {
+  const post = posts.find(p => p.slug === slug);
+  if (!post) {
+    FEED_EL.style.display = 'none';
+    POST_EL.style.display = 'block';
+    TITLE_EL.textContent = 'Not Found';
+    DATE_EL.textContent = '';
+    TAGS_EL.innerHTML = '';
+    HERO_EL.innerHTML = '';
+    CONTENT_EL.innerHTML = `<p>Post with slug <code>${esc(slug)}</code> not found.</p>`;
+    return;
   }
 
-  window.scrollTo({ top: 0, behavior: "instant" });
+  const mdPath = `${POSTS_DIR}/${post.slug}.md`;
+  const md = await fetchText(mdPath);
+
+  renderPostMeta(post);
+
+  // Render markdown
+  CONTENT_EL.innerHTML = marked.parse(md);
+
+  FEED_EL.style.display = 'none';
+  POST_EL.style.display = 'block';
 }
 
-function parseFrontmatter(src){
-  // tolerate BOM + CRLF
-  if (src.charCodeAt(0) === 0xfeff) src = src.slice(1);
-  const m = src.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
-  if (!m) return { fm:{}, body: src };
+async function main() {
+  try {
+    const posts = await fetchJSON(POSTS_JSON);
 
-  const yaml = m[1], body = src.slice(m[0].length);
-  const fm = {};
-  yaml.split(/\r?\n/).forEach(line=>{
-    if (!line.trim()) return;
-    const k = line.split(":")[0].trim();
-    let v = line.slice(k.length+1).trim();
-    v = v.replace(/^"(.*)"$/, "$1").replace(/^'(.*)'$/, "$1");
-    if (v.startsWith("[") && v.endsWith("]")){
-      v = v.slice(1,-1).split(",").map(s=>s.trim().replace(/^"(.*)"$/,"$1").replace(/^'(.*)'$/,"$1"));
+    const slug = getSlugFromURL();
+    if (slug) {
+      await renderPost(slug, posts);
+    } else {
+      renderFeed(posts);
     }
-    fm[k] = v;
-  });
-  return { fm, body };
+
+    // support client-side nav: switching hash should load the post
+    window.addEventListener('hashchange', () => {
+      const s = getSlugFromURL();
+      if (s) renderPost(s, posts);
+      else renderFeed(posts);
+    });
+  } catch (e) {
+    console.error('Blog load error:', e);
+    FEED_EL.innerHTML = `<p>Failed to load the blog. Check console for details.</p>`;
+  }
 }
 
-function escapeHtml(s){
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-function formatDate(iso){
-  if (!iso) return "";
-  const d = new Date(iso);
-  return d.toLocaleDateString([], {weekday:"short", month:"short", day:"numeric", year:"numeric"});
-}
+main();
