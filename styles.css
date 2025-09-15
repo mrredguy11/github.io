@@ -7,8 +7,11 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; color:var(--fg); background:var(--bg);
+  margin:0;
+  color:var(--fg);
+  background:var(--bg);
   font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  overflow-x:hidden;
 }
 a{color:var(--accent); text-decoration:none}
 a:hover{text-decoration:underline}
@@ -19,6 +22,27 @@ footer{border-top:2px solid var(--edge); border-bottom:none; opacity:.9}
 h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
 .topnav{margin-top:8px}
 .topnav a{margin:0 8px; font-weight:600}
+
+/* ==== STARFIELD BACKGROUND ==== */
+body::before, body::after {
+  content:"";
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  background:transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
+  z-index:-1;
+}
+body::before {
+  animation: drift 120s linear infinite;
+  opacity:0.6;
+}
+body::after {
+  animation: drift 200s linear infinite reverse;
+  opacity:0.3;
+}
+@keyframes drift {
+  from {background-position:0 0;}
+  to   {background-position:1000px 1000px;}
+}
 
 /* Main grid */
 .grid{
@@ -98,4 +122,3 @@ figcaption{margin-top:6px; opacity:.85; font-size:14px}
   .grid{grid-template-columns:1fr}
   .span4,.span8,.full{grid-column:1 / -1}
 }
-
