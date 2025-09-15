@@ -45,29 +45,36 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
   document.getElementById('forecast').innerHTML = html;
 })().catch(console.error);
 
-// 2) Astronomy (Open-Meteo)
-(async () => {
-  const url = `https://api.open-meteo.com/v1/astronomy?latitude=${LAT}&longitude=${LON}` +
-              `&daily=sunrise,sunset,moon_phase,moon_phase_description,moon_illumination&timezone=auto`;
-  let day = {};
-  try {
-    const r = await fetch(url);
-    const d = await r.json();
-    day = d?.daily || {};
-  } catch (e) {
-    console.error('Astronomy fetch failed', e);
-  }
+// 2) Astronomy (SunCalc — no external API)
+// - Moon illumination & phase
+// - Sunset
+// - Astronomical night start (sun altitude −18°)
+(() => {
+  if (!window.SunCalc) { console.warn('SunCalc not loaded'); return; }
 
-  const phaseText = day.moon_phase_description?.[0] || day.moon_phase?.[0] || "n/a";
-  const illum = day.moon_illumination?.[0];
-  const sunsetISO = day.sunset?.[0];
+  const now = new Date();
+  const times = SunCalc.getTimes(now, LAT, LON);
+
+  // true astro night start (might be null at high latitudes certain seasons)
+  const astroStart = times.night || times.nauticalDusk || times.dusk || times.sunset || null;
+
+  // moon
+  const moon = SunCalc.getMoonIllumination(now);
+  const illumPct = Math.round(moon.fraction * 100);
+
+  // crude phase text
+  const phaseNames = [
+    "New Moon","Waxing Crescent","First Quarter","Waxing Gibbous",
+    "Full Moon","Waning Gibbous","Last Quarter","Waning Crescent"
+  ];
+  const phaseIndex = Math.floor(((moon.phase + 1) % 1) * 8); // 0..7
+  const phaseText = phaseNames[phaseIndex];
 
   document.getElementById('moonPhase').textContent = phaseText;
-  document.getElementById('moonIllum').textContent = (illum == null) ? "n/a" : Math.round(illum);
-  document.getElementById('sunset').textContent = sunsetISO ? fmtTime(sunsetISO) : "n/a";
-  // Placeholder for true -18° astronomical twilight (swap later)
-  document.getElementById('astroTwilight').textContent = sunsetISO ? fmtTime(sunsetISO) : "n/a";
-})().catch(console.error);
+  document.getElementById('moonIllum').textContent = illumPct;
+  document.getElementById('sunset').textContent = times.sunset ? fmtTime(times.sunset) : "n/a";
+  document.getElementById('astroTwilight').textContent = astroStart ? fmtTime(astroStart) : "n/a";
+})();
 
 // 3) Aurora Kp (NOAA SWPC)
 (async () => {
@@ -79,7 +86,6 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
 })().catch(console.error);
 
 // 4) Air Quality / smoke proxy (Open-Meteo)
-// Finds latest non-null values up to 24h back so it doesn't stick at 0.
 (async () => {
   const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LON}` +
               `&hourly=pm10,pm2_5&timezone=auto`;
@@ -103,9 +109,9 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
   document.getElementById('pm10').textContent = (pm10v == null) ? "n/a" : Math.round(pm10v);
 })().catch(console.error);
 
-// 5) Auto-refresh images that have class="nocache" (webcams + MeteoBlue)
-// Busts cache with a timestamp query every 5 minutes
-function refreshWebcams(){
+// 5) Auto-refresh images (webcams, MeteoBlue, CSC, NOAA)
+// Bust cache with a timestamp query every 5 minutes
+function refreshTiles(){
   const imgs = document.querySelectorAll('img.nocache');
   const ts = Date.now();
   imgs.forEach(img => {
@@ -113,5 +119,6 @@ function refreshWebcams(){
     img.src = `${base}?t=${ts}`;
   });
 }
-refreshWebcams();
-setInterval(refreshWebcams, 5 * 60 * 1000);
+refreshTiles();
+setInterval(refreshTiles, 5 * 60 * 1000);
+
