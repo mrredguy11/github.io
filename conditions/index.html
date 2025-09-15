@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conditions • Dylly’s Astro Dashboard</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+
+  <header>
+    <h1>★ Dylly’s Astro Dashboard</h1>
+    <nav class="topnav">
+      <a href="../index.html">Home</a>
+      <a href="index.html" class="active">Conditions</a>
+      <a href="../blog/">Blog</a>
+    </nav>
+  </header>
+
+  <main class="grid">
+    <section class="card span8">
+      <h2>Tonight’s Forecast</h2>
+      <div id="forecast">Loading...</div>
+    </section>
+
+    <section class="card span4">
+      <h2>Astronomy</h2>
+      <ul>
+        <li>Moon phase: <span id="moonPhase">—</span></li>
+        <li>Moon illum.: <span id="moonIllum">—</span>%</li>
+        <li>Sunset: <span id="sunset">—</span></li>
+        <li>Dark start (astro): <span id="astroTwilight">—</span></li>
+      </ul>
+    </section>
+
+    <section class="card span4">
+      <h2>Aurora</h2>
+      <p>Planetary Kp: <strong><span id="kp">—</span></strong></p>
+      <small><a href="https://www.swpc.noaa.gov/" target="_blank">NOAA SWPC</a></small>
+    </section>
+
+    <section class="card span4">
+      <h2>Air Quality / Smoke</h2>
+      <p>PM2.5 (µg/m³): <strong><span id="pm25">—</span></strong></p>
+      <p>PM10 (µg/m³): <strong><span id="pm10">—</span></strong></p>
+      <small><a href="https://open-meteo.com" target="_blank">Open-Meteo</a></small>
+    </section>
+
+    <section class="card span4">
+      <h2>Seeing & Transparency</h2>
+      <a href="https://www.cleardarksky.com/c/Calgarykey.html" target="_blank">
+        Calgary Clear Sky Chart →
+      </a>
+    </section>
+
+    <section class="card full">
+      <h2>Webcams</h2>
+      <div class="cams">
+        <figure>
+          <img src="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG" alt="UCalgary All-Sky Cam">
+          <figcaption>UCalgary All-Sky Cam</figcaption>
+        </figure>
+        <figure>
+          <img src="https://cam01.sci.ucalgary.ca/netcam/152/1.jpg" alt="RAO Weather Cam 1">
+          <figcaption>RAO Weather Cam 1 — NW view</figcaption>
+        </figure>
+        <figure>
+          <img src="https://www.metcam.navcanada.ca/dawc_images/wxcam/CYBW/CYBW_W-full-e.jpeg" alt="Springbank Airport">
+          <figcaption>Springbank Airport — West view</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>© 2025 Dylly • Homebrew • Open-Meteo • NOAA SWPC</small>
+  </footer>
+
+  <script src="../app.js"></script>
+  <script src="../starfield.js"></script>
+</body>
+</html>

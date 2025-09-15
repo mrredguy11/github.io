@@ -2,41 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Blog • Dylly’s Astro Dashboard</title>
-  <link rel="stylesheet" href="/styles.css">
-  <!-- Markdown renderer + date helper -->
+  <link rel="stylesheet" href="../styles.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-  <style>
-    .blog-wrap{max-width:860px;margin:22px auto;padding:0 18px}
-    .post-card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;margin-bottom:16px}
-    .post-card h3{margin:0 0 6px}
-    .muted{color:var(--muted);font-size:14px}
-    .prose img{max-width:100%;border-radius:10px;border:1px solid var(--edge)}
-    .prose pre{overflow:auto;background:#0f0f0f;border:1px solid var(--edge);border-radius:10px;padding:10px}
-    .backlink{display:inline-block;margin:10px 0}
-    .tag{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--edge);margin-right:6px;font-size:12px}
-  </style>
 </head>
 <body>
-<header>
-  <h1>★ Dylly’s Blog</h1>
-  <p class="muted">Astrophotography notes, session logs, gear, and experiments.</p>
-</header>
+  <canvas id="starfield"></canvas>
 
-<main class="blog-wrap">
-  <!-- Feed view -->
-  <section id="feed"></section>
+  <header>
+    <h1>★ Dylly’s Astro Dashboard</h1>
+    <nav class="topnav">
+      <a href="../index.html">Home</a>
+      <a href="../conditions/">Conditions</a>
+      <a href="index.html" class="active">Blog</a>
+    </nav>
+  </header>
 
-  <!-- Single post view -->
-  <article id="post" class="prose" style="display:none"></article>
-</main>
+  <main class="blog-wrap">
+    <section id="feed"></section>
+    <article id="post" style="display:none">
+      <a href="./" class="back">← Back</a>
+      <h1 id="post-title"></h1>
+      <small id="post-date"></small>
+      <div id="post-tags" class="tags"></div>
+      <div id="post-hero" class="hero"></div>
+      <div id="post-content"></div>
+    </article>
+  </main>
 
-<footer>
-  <small>© 2025 Dylly • Homebrew blog (Markdown + JS) • <a href="/blog/rss.xml">RSS</a> • <a href="/">Back to dashboard</a></small>
-</footer>
+  <footer>
+    <small>© 2025 Dylly • Homebrew blog • Markdown + JS</small>
+  </footer>
 
-<script src="blog.js"></script>
+  <script src="blog.js"></script>
+  <script src="../starfield.js"></script>
 </body>
 </html>

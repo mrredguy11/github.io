@@ -1,15 +1,10 @@
 [
   {
-    "title": "First Light with the RedCat",
-    "date": "2025-09-14",
-    "slug": "first-light-redcat",
-    "tags": ["session log","imaging"],
-    "summary": "Quick notes from last night’s test run with the RedCat and ASI533."
-  },
-  {
-    "title": "Building my Astro Dashboard",
-    "date": "2025-09-10",
-    "slug": "building-astro-dashboard",
-    "tags": ["devlog","dashboard"]
+    "title": "First Light with My Astrophotography Rig",
+    "date": "2025-09-15",
+    "slug": "m31-first-light",
+    "tags": ["first light", "astrophotography", "gear"],
+    "summary": "My first night imaging the Andromeda Galaxy (M31) with the William Optics ZS61 and Canon EOS R.",
+    "hero_image": "/photos/m31-first-light.jpg"
   }
 ]

@@ -1,211 +1,56 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dylly’s Astro Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dylly’s Astro Hub</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header>
-  <h1>★ Dylly’s Astro Dashboard</h1>
-  <p id="loc">Loading…</p>
-  <nav class="topnav"><a href="/blog/">Blog</a></nav>
-</header>
+  <canvas id="starfield"></canvas>
 
-<main class="grid">
+  <header>
+    <h1>★ Dylly’s Astro Dashboard</h1>
+    <nav class="topnav">
+      <a href="index.html" class="active">Home</a>
+      <a href="conditions/">Conditions</a>
+      <a href="blog/">Blog</a>
+    </nav>
+  </header>
 
-  <!-- =================== TONIGHT AT A GLANCE =================== -->
-  <section class="card summary full">
-    <h2>Tonight at a glance</h2>
-    <div class="kpi-grid">
-      <div class="kpi">
-        <div class="label">Dark window</div>
-        <div class="value" id="kpiDark">—</div>
-        <div class="badge" id="bDark">•</div>
+  <main class="home-wrap">
+    <section class="hero">
+      <h1>Astrophotography Hub</h1>
+      <p>Weather, sky conditions, live cams & session logs.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="conditions/">View Conditions</a>
+        <a class="btn" href="blog/">Read the Blog</a>
       </div>
-      <div class="kpi">
-        <div class="label">Cloud (min, next 8–12h)</div>
-        <div class="value"><span id="kpiCloud">—</span>%</div>
-        <div class="badge" id="bCloud">•</div>
+    </section>
+
+    <section class="home-cards">
+      <div class="home-card">
+        <h3>Conditions</h3>
+        <p>Tonight’s forecast, astronomy, aurora, air quality, and webcams.</p>
+        <a class="link" href="conditions/">Open →</a>
       </div>
-      <div class="kpi">
-        <div class="label">Moon illum.</div>
-        <div class="value"><span id="kpiMoon">—</span>%</div>
-        <div class="badge" id="bMoon">•</div>
+      <div class="home-card">
+        <h3>Blog</h3>
+        <p>Session logs, processing notes, and gear experiments.</p>
+        <a class="link" href="blog/">Open →</a>
       </div>
-      <div class="kpi">
-        <div class="label">Wind (max, next 8–12h)</div>
-        <div class="value"><span id="kpiWind">—</span> m/s</div>
-        <div class="badge" id="bWind">•</div>
+      <div class="home-card">
+        <h3>About</h3>
+        <p>Homebrew site running on GitHub Pages. Markdown → HTML, no tracking.</p>
+        <a class="link" href="blog/">See a post →</a>
       </div>
-      <div class="kpi">
-        <div class="label">Smoke (PM2.5)</div>
-        <div class="value"><span id="kpiPM25">—</span></div>
-        <div class="badge" id="bPM25">•</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Aurora Kp</div>
-        <div class="value" id="kpiKp">—</div>
-        <div class="badge" id="bKp">•</div>
-      </div>
-      <div class="kpi muted">
-        <div class="label">Transparency</div>
-        <div class="value">See charts</div>
-      </div>
-      <div class="kpi muted">
-        <div class="label">Seeing</div>
-        <div class="value">See charts</div>
-      </div>
-    </div>
-    <small class="updated" id="updSummary">Last updated: —</small>
-  </section>
+    </section>
+  </main>
 
-  <!-- =================== PRIMARY CARDS =================== -->
-  <section class="card span4">
-    <h2>Tonight’s Forecast</h2>
-    <div id="forecast">Loading…</div>
-    <small class="updated" id="updForecast">Last updated: —</small>
-  </section>
+  <footer>
+    <small>© 2025 Dylly • Homebrew • Open-Meteo • NOAA SWPC</small>
+  </footer>
 
-  <section class="card span4">
-    <h2>Astronomy</h2>
-    <ul id="astro">
-      <li>Moon phase: <span id="moonPhase">…</span></li>
-      <li>Moon illum.: <span id="moonIllum">…</span>%</li>
-      <li>Sunset: <span id="sunset">…</span></li>
-      <li>Dark start (astro −18°): <span id="astroTwilight">…</span></li>
-    </ul>
-    <small class="updated" id="updAstro">Last updated: —</small>
-  </section>
-
-  <section class="card span4">
-    <h2>Aurora</h2>
-    <p>Planetary Kp: <strong id="kp">…</strong></p>
-    <small>NOAA SWPC (latest)</small>
-    <small class="updated" id="updKp">Last updated: —</small>
-  </section>
-
-  <section class="card span4">
-    <h2>Air Quality / Smoke proxy</h2>
-    <p>PM2.5 (µg/m³): <strong id="pm25">…</strong></p>
-    <p>PM10 (µg/m³): <strong id="pm10">…</strong></p>
-    <small>Open-Meteo Air Quality</small>
-    <small class="updated" id="updAQ">Last updated: —</small>
-  </section>
-
-  <!-- =================== CHARTS =================== -->
-  <section class="card span8">
-    <h2>Seeing & Transparency</h2>
-    <div class="cams">
-      <figure>
-        <a href="https://www.meteoblue.com/en/weather/outdoorsports/seeing/calgary_canada_5913490" target="_blank" rel="noopener">
-          <img class="nocache"
-               src="https://my.meteoblue.com/visimage/meteogram/seeing?apikey=demo&lat=51.05&lon=-114.07&asl=1048&tz=America%2FEdmonton&lang=en"
-               alt="Seeing forecast (MeteoBlue)">
-        </a>
-        <figcaption>Seeing — Calgary (MeteoBlue)</figcaption>
-      </figure>
-
-      <figure>
-        <a href="https://www.meteoblue.com/en/weather/outdoorsports/astronomy/calgary_canada_5913490" target="_blank" rel="noopener">
-          <img class="nocache"
-               src="https://my.meteoblue.com/visimage/meteogram/astronomy?apikey=demo&lat=51.05&lon=-114.07&asl=1048&tz=America%2FEdmonton&lang=en"
-               alt="Astronomy transparency (MeteoBlue)">
-        </a>
-        <figcaption>Transparency — Calgary (MeteoBlue)</figcaption>
-      </figure>
-    </div>
-    <small class="updated" id="updMeteo">Last updated: —</small>
-  </section>
-
-  <section class="card span8">
-    <h2>Calgary — Clear Sky Chart</h2>
-    <div class="cams">
-      <figure>
-        <a href="https://www.cleardarksky.com/c/Calgarykey.html" target="_blank" rel="noopener">
-          <img class="nocache"
-               src="https://www.cleardarksky.com/c/Calgarycsk.gif?c=1296014"
-               alt="Calgary Clear Sky Chart (clouds/transparency/seeing)">
-        </a>
-        <figcaption>
-          Clouds • Transparency • Seeing. Sponsors: <strong>Kerrigan Singer</strong> &amp; <strong>Ridley Singer</strong>.
-        </figcaption>
-      </figure>
-    </div>
-    <small class="updated" id="updCSC">Last updated: —</small>
-    <small>Source: Clear Sky Chart (Attilla Danko, CSCCharts) — click image for legend & full maps.</small>
-  </section>
-
-  <section class="card span8">
-    <h2>Aurora Oval — 30-Minute Forecast</h2>
-    <div class="cams">
-      <figure>
-        <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">
-          <img class="nocache"
-               src="https://services.swpc.noaa.gov/images/aurora-forecast-northern-hemisphere.jpg"
-               alt="NOAA SWPC — Northern Hemisphere aurora 30-min forecast">
-        </a>
-        <figcaption>Northern Hemisphere (NOAA SWPC OVATION)</figcaption>
-      </figure>
-      <figure>
-        <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">
-          <img class="nocache"
-               src="https://services.swpc.noaa.gov/images/aurora-forecast-southern-hemisphere.jpg"
-               alt="NOAA SWPC — Southern Hemisphere aurora 30-min forecast">
-        </a>
-        <figcaption>Southern Hemisphere (NOAA SWPC OVATION)</figcaption>
-      </figure>
-    </div>
-    <small class="updated" id="updOval">Last updated: —</small>
-  </section>
-
-  <!-- =================== WEBCAMS =================== -->
-  <section class="card full">
-    <h2>Webcams</h2>
-    <div class="cams">
-      <figure>
-        <a href="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG" target="_blank" rel="noopener">
-          <img class="nocache"
-               src="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG"
-               alt="UCalgary All-Sky Cam">
-        </a>
-        <figcaption>UCalgary All-Sky Cam</figcaption>
-      </figure>
-
-      <figure>
-        <a href="https://cam01.sci.ucalgary.ca/netcam/152/1.jpg" target="_blank" rel="noopener">
-          <img class="nocache"
-               src="https://cam01.sci.ucalgary.ca/netcam/152/1.jpg"
-               alt="RAO Weather Cam 1 — NW view">
-        </a>
-        <figcaption>RAO Weather Cam 1 — NW view</figcaption>
-      </figure>
-
-      <figure>
-        <a href="https://www.metcam.navcanada.ca/dawc_images/wxcam/CYBW/CYBW_W-full-e.jpeg" target="_blank" rel="noopener">
-          <img class="nocache"
-               src="https://www.metcam.navcanada.ca/dawc_images/wxcam/CYBW/CYBW_W-full-e.jpeg"
-               alt="Springbank Airport — West view">
-        </a>
-        <figcaption>Springbank Airport — West view</figcaption>
-      </figure>
-
-      <figure>
-        <a class="btn" href="https://511.alberta.ca/map/Cctv/loc44C--2" target="_blank" rel="noopener">Open live camera</a>
-        <figcaption>511 Alberta — 194 Ave &amp; Macleod Trail S.</figcaption>
-      </figure>
-    </div>
-    <small class="updated" id="updWebcams">Last updated: —</small>
-  </section>
-</main>
-
-<footer>
-  <small>© 2025 Dylly • Homebrew • <a href="https://open-meteo.com/">Open-Meteo</a> • NOAA SWPC • SunCalc • Clear Sky Chart • MeteoBlue</small>
-</footer>
-
-<!-- SunCalc (for local sun/moon times without an API) -->
-<script src="https://unpkg.com/suncalc@1.9.0/suncalc.js"></script>
-<script src="app.js"></script>
+  <script src="starfield.js"></script>
 </body>
 </html>

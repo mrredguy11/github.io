@@ -1,4 +1,4 @@
-/* ===== Dylly Astro Dashboard — layout + theme ===== */
+/* ===== Theme (black + green) ===== */
 :root{
   --bg:#0b0b0b; --panel:#121212; --fg:#e8ffe8;
   --muted:#9ad39a; --accent:#40ff9c; --edge:#262626;
@@ -7,9 +7,7 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;
-  color:var(--fg);
-  background:var(--bg);
+  margin:0; color:var(--fg); background:var(--bg);
   font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
   overflow-x:hidden;
 }
@@ -17,108 +15,71 @@ a{color:var(--accent); text-decoration:none}
 a:hover{text-decoration:underline}
 small{color:var(--muted)}
 
-header,footer{padding:18px 0; text-align:center; border-bottom:2px solid var(--edge)}
-footer{border-top:2px solid var(--edge); border-bottom:none; opacity:.9}
-h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
-.topnav{margin-top:8px}
-.topnav a{margin:0 8px; font-weight:600}
+/* ===== Header/Nav ===== */
+header{padding:20px 0; text-align:center; border-bottom:1px solid var(--edge)}
+.topnav{margin-top:10px}
+.topnav a{margin:0 12px; font-weight:600; color:var(--accent)}
+.topnav a.active{background:var(--panel); border:1px solid var(--edge); padding:4px 8px; border-radius:6px}
 
-/* ==== STARFIELD BACKGROUND ==== */
-body::before, body::after {
-  content:"";
-  position:fixed;
-  top:0; left:0; right:0; bottom:0;
-  background:transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
-  z-index:-1;
-}
-body::before {
-  animation: drift 120s linear infinite;
-  opacity:0.6;
-}
-body::after {
-  animation: drift 200s linear infinite reverse;
-  opacity:0.3;
-}
-@keyframes drift {
-  from {background-position:0 0;}
-  to   {background-position:1000px 1000px;}
-}
+/* ===== Starfield ===== */
+#starfield{position:fixed; inset:0; z-index:-2; background:#000}
 
-/* Main grid */
-.grid{
-  max-width:1280px;
-  margin:22px auto;
-  padding:0 18px;
-  display:grid; gap:18px;
-  grid-template-columns: repeat(12, 1fr);
-}
+/* ===== Landing page ===== */
+.home-wrap{max-width:1100px; margin:24px auto; padding:0 18px}
+.hero{ text-align:center; padding:48px 20px; margin:10px 0 24px; border:1px solid var(--edge); border-radius:16px; background:var(--panel) }
+.hero h1{font-size:32px; margin:0 0 8px}
+.hero .cta{margin-top:16px}
+.btn{display:inline-block; padding:10px 16px; border:1px solid var(--edge); border-radius:999px; color:var(--fg); background:var(--panel); margin:0 6px; text-decoration:none; font-weight:700}
+.btn-primary{background:var(--accent); color:#0b0b0b; border-color:transparent}
+.home-cards{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.home-card{background:var(--panel); border:1px solid var(--edge); border-radius:12px; padding:16px}
+.home-card h3{margin:0 0 6px}
+.home-card .link{font-weight:700}
 
-/* Card & placement helpers */
-.card{
-  background:var(--panel);
-  border:1px solid var(--edge);
-  border-radius:12px;
-  padding:16px;
-}
+/* ===== Dashboard grid ===== */
+.grid{max-width:1280px; margin:22px auto; padding:0 18px; display:grid; gap:18px; grid-template-columns:repeat(12,1fr)}
+.card{background:var(--panel); border:1px solid var(--edge); border-radius:12px; padding:16px}
 .card h2{margin:0 0 10px; font-size:18px}
-
-.span4{grid-column: span 4;}
-.span8{grid-column: span 8;}
-.full {grid-column: 1 / -1;}
-
-/* Forecast table */
+.span4{grid-column:span 4}
+.span8{grid-column:span 8}
+.full{grid-column:1/-1}
 #forecast table{width:100%; border-collapse:collapse; font-size:15px}
-#forecast th,#forecast td{
-  border-bottom:1px dashed var(--edge); padding:6px 4px; text-align:left;
-}
+#forecast th,#forecast td{border-bottom:1px dashed var(--edge); padding:6px 4px; text-align:left}
 
-/* Reusable image grid (webcams / charts) */
-.cams{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap:16px;
-}
+/* ===== Webcams (show full frame) ===== */
+.cams{display:grid; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); gap:16px}
 .cams figure{margin:0}
-.cams img,.cams iframe{
-  width:100%; height:320px; object-fit:cover;
-  border:1px solid var(--edge); border-radius:10px; background:#000;
+.cams img{
+  width:100%;
+  height:auto;                /* no fixed height */
+  aspect-ratio:16/9;         /* consistent frame without cropping */
+  object-fit:contain;         /* keep entire view visible */
+  background:#000;
+  border:1px solid var(--edge);
+  border-radius:10px;
 }
 figcaption{margin-top:6px; opacity:.85; font-size:14px}
 
-/* “Last updated” line */
-.updated{display:block; margin-top:10px; opacity:.75}
+/* ===== Blog ===== */
+.blog-wrap{max-width:900px; margin:22px auto; padding:0 18px}
+#feed{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px}
+.post-card{background:var(--panel); border:1px solid var(--edge); border-radius:12px; padding:16px}
+.post-card h3{margin:0 0 6px}
+.muted{color:var(--muted); font-size:14px}
+.tag{display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid var(--edge); margin-right:6px; font-size:12px}
+#post{max-width:900px; margin:0 auto; padding:24px}
+#post-title{margin:0 0 6px}
+#post-date{color:var(--muted); display:inline-block; margin-bottom:8px}
+.tags{display:flex; gap:6px; flex-wrap:wrap; margin:8px 0 16px}
+#post .hero img{width:100%; max-height:70vh; object-fit:contain; display:block; background:#000; border:1px solid var(--edge); border-radius:12px; margin:8px 0 18px}
+#post-content img{display:block; max-width:100%; height:auto; background:#000; border:1px solid var(--edge); border-radius:10px; margin:16px auto}
+#post-content h2{margin:20px 0 10px; font-size:1.4em; color:var(--accent)}
+#post-content h3{margin:14px 0 8px; font-size:1.2em}
+#post-content ul,#post-content ol{margin:8px 0 18px 24px}
+#post-content li{margin:4px 0}
 
-/* Summary bar (Tonight at a glance) */
-.summary h2{margin-bottom:10px}
-.kpi-grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap:12px;
-}
-.kpi{
-  background:#0f0f0f; border:1px solid var(--edge);
-  padding:10px; border-radius:10px;
-}
-.kpi .label{font-size:13px; color:var(--muted)}
-.kpi .value{font-size:18px; font-weight:600}
-.kpi .badge{
-  display:inline-block; margin-top:6px; padding:2px 8px; border-radius:999px;
-  font-size:12px; font-weight:700; color:#000;
-  background:var(--muted); /* default */
-}
-.kpi.good  .badge{background:var(--good)}
-.kpi.ok    .badge{background:var(--ok)}
-.kpi.bad   .badge{background:var(--bad)}
-.kpi.muted .badge{display:none}
-
-/* Button tile (for 511 link) */
-.btn{
-  display:inline-block; padding:10px 14px; border:1px solid var(--accent);
-  border-radius:10px; text-align:center; font-weight:600;
-}
-
-/* Responsive */
-@media (max-width: 900px){
+/* ===== Responsive ===== */
+@media (max-width:900px){
   .grid{grid-template-columns:1fr}
-  .span4,.span8,.full{grid-column:1 / -1}
+  .span4,.span8,.full{grid-column:1/-1}
 }
