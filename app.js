@@ -102,3 +102,24 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
   document.getElementById('pm10').textContent = (pm10v == null) ? "n/a" : Math.round(pm10v);
 })().catch(console.error);
 
+// 5) Transparency and seeing
+<section class="card">
+  <h2>Seeing & Transparency</h2>
+  <div class="cams">
+    <figure>
+      <a href="https://www.meteoblue.com/en/weather/outdoorsports/seeing/calgary_canada_5913490" target="_blank" rel="noopener">
+        <img src="https://my.meteoblue.com/visimage/meteogram/seeing?apikey=demo&lat=51.05&lon=-114.07&asl=1048&tz=America%2FEdmonton&lang=en" 
+             alt="Seeing forecast (MeteoBlue)" class="nocache">
+      </a>
+      <figcaption>Seeing forecast – Calgary (MeteoBlue)</figcaption>
+    </figure>
+
+    <figure>
+      <a href="https://www.meteoblue.com/en/weather/outdoorsports/astronomy/calgary_canada_5913490" target="_blank" rel="noopener">
+        <img src="https://my.meteoblue.com/visimage/meteogram/astronomy?apikey=demo&lat=51.05&lon=-114.07&asl=1048&tz=America%2FEdmonton&lang=en" 
+             alt="Astronomy transparency (MeteoBlue)" class="nocache">
+      </a>
+      <figcaption>Transparency forecast – Calgary (MeteoBlue)</figcaption>
+    </figure>
+  </div>
+</section>
