@@ -13,13 +13,60 @@
 </header>
 
 <main class="grid">
-  <!-- Tonight's Forecast -->
+
+  <!-- =================== TONIGHT AT A GLANCE =================== -->
+  <section class="card summary full">
+    <h2>Tonight at a glance</h2>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="label">Dark window</div>
+        <div class="value" id="kpiDark">—</div>
+        <div class="badge" id="bDark">•</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Cloud (min, next 8–12h)</div>
+        <div class="value"><span id="kpiCloud">—</span>%</div>
+        <div class="badge" id="bCloud">•</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Moon illum.</div>
+        <div class="value"><span id="kpiMoon">—</span>%</div>
+        <div class="badge" id="bMoon">•</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Wind (max, next 8–12h)</div>
+        <div class="value"><span id="kpiWind">—</span> m/s</div>
+        <div class="badge" id="bWind">•</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Smoke (PM2.5)</div>
+        <div class="value"><span id="kpiPM25">—</span></div>
+        <div class="badge" id="bPM25">•</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Aurora Kp</div>
+        <div class="value" id="kpiKp">—</div>
+        <div class="badge" id="bKp">•</div>
+      </div>
+      <div class="kpi muted">
+        <div class="label">Transparency</div>
+        <div class="value">See charts</div>
+      </div>
+      <div class="kpi muted">
+        <div class="label">Seeing</div>
+        <div class="value">See charts</div>
+      </div>
+    </div>
+    <small class="updated" id="updSummary">Last updated: —</small>
+  </section>
+
+  <!-- =================== PRIMARY CARDS =================== -->
   <section class="card span4">
     <h2>Tonight’s Forecast</h2>
     <div id="forecast">Loading…</div>
+    <small class="updated" id="updForecast">Last updated: —</small>
   </section>
 
-  <!-- Astronomy (SunCalc: moon + true astronomical darkness) -->
   <section class="card span4">
     <h2>Astronomy</h2>
     <ul id="astro">
@@ -28,24 +75,25 @@
       <li>Sunset: <span id="sunset">…</span></li>
       <li>Dark start (astro −18°): <span id="astroTwilight">…</span></li>
     </ul>
+    <small class="updated" id="updAstro">Last updated: —</small>
   </section>
 
-  <!-- Aurora Kp -->
   <section class="card span4">
     <h2>Aurora</h2>
     <p>Planetary Kp: <strong id="kp">…</strong></p>
     <small>NOAA SWPC (latest)</small>
+    <small class="updated" id="updKp">Last updated: —</small>
   </section>
 
-  <!-- Air Quality -->
   <section class="card span4">
     <h2>Air Quality / Smoke proxy</h2>
     <p>PM2.5 (µg/m³): <strong id="pm25">…</strong></p>
     <p>PM10 (µg/m³): <strong id="pm10">…</strong></p>
     <small>Open-Meteo Air Quality</small>
+    <small class="updated" id="updAQ">Last updated: —</small>
   </section>
 
-  <!-- Seeing & Transparency (MeteoBlue charts) -->
+  <!-- =================== CHARTS =================== -->
   <section class="card span8">
     <h2>Seeing & Transparency</h2>
     <div class="cams">
@@ -67,9 +115,9 @@
         <figcaption>Transparency — Calgary (MeteoBlue)</figcaption>
       </figure>
     </div>
+    <small class="updated" id="updMeteo">Last updated: —</small>
   </section>
 
-  <!-- Clear Sky Chart (clouds + transparency + seeing) -->
   <section class="card span8">
     <h2>Calgary — Clear Sky Chart</h2>
     <div class="cams">
@@ -84,12 +132,10 @@
         </figcaption>
       </figure>
     </div>
-    <small>
-      Source: Clear Sky Chart (Attilla Danko, CSCCharts) — click image for legend & full maps.
-    </small>
+    <small class="updated" id="updCSC">Last updated: —</small>
+    <small>Source: Clear Sky Chart (Attilla Danko, CSCCharts) — click image for legend & full maps.</small>
   </section>
 
-  <!-- Aurora Oval (NOAA SWPC OVATION 30-min) -->
   <section class="card span8">
     <h2>Aurora Oval — 30-Minute Forecast</h2>
     <div class="cams">
@@ -110,13 +156,13 @@
         <figcaption>Southern Hemisphere (NOAA SWPC OVATION)</figcaption>
       </figure>
     </div>
+    <small class="updated" id="updOval">Last updated: —</small>
   </section>
 
-  <!-- Webcams -->
+  <!-- =================== WEBCAMS =================== -->
   <section class="card full">
     <h2>Webcams</h2>
     <div class="cams">
-      <!-- UCalgary All-Sky -->
       <figure>
         <a href="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG" target="_blank" rel="noopener">
           <img class="nocache"
@@ -126,7 +172,6 @@
         <figcaption>UCalgary All-Sky Cam</figcaption>
       </figure>
 
-      <!-- RAO Weather Cam 1 — NW -->
       <figure>
         <a href="https://cam01.sci.ucalgary.ca/netcam/152/1.jpg" target="_blank" rel="noopener">
           <img class="nocache"
@@ -136,7 +181,6 @@
         <figcaption>RAO Weather Cam 1 — NW view</figcaption>
       </figure>
 
-      <!-- Springbank Airport — West -->
       <figure>
         <a href="https://www.metcam.navcanada.ca/dawc_images/wxcam/CYBW/CYBW_W-full-e.jpeg" target="_blank" rel="noopener">
           <img class="nocache"
@@ -146,12 +190,12 @@
         <figcaption>Springbank Airport — West view</figcaption>
       </figure>
 
-      <!-- 511 Alberta — 194 Ave & Macleod Trail S (link tile; embedding usually blocked) -->
       <figure>
         <a class="btn" href="https://511.alberta.ca/map/Cctv/loc44C--2" target="_blank" rel="noopener">Open live camera</a>
         <figcaption>511 Alberta — 194 Ave &amp; Macleod Trail S.</figcaption>
       </figure>
     </div>
+    <small class="updated" id="updWebcams">Last updated: —</small>
   </section>
 </main>
 
