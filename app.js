@@ -46,20 +46,22 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
 
 // 2) Astronomy (Open-Meteo)
 (async () => {
-  const url = `https://api.open-meteo.com/v1/astronomy?latitude=${LAT}&longitude=${LON}`
-    + `&daily=sunrise,sunset,moon_phase,moon_phase_description,moon_illumination&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/astronomy?latitude=${LAT}&longitude=${LON}` +
+              `&daily=sunrise,sunset,moon_phase,moon_phase_description,moon_illumination&timezone=auto`;
   const r = await fetch(url); const d = await r.json();
   const day = d.daily || {};
 
-  const phaseDesc = day.moon_phase_description?.[0];
-  const phaseCode = day.moon_phase?.[0];
+  const phaseText = day.moon_phase_description?.[0] || day.moon_phase?.[0] || "n/a";
+  const illum = day.moon_illumination?.[0];
 
-  document.getElementById('moonPhase').textContent = phaseDesc || phaseCode || "n/a";
-  document.getElementById('moonIllum').textContent = Math.round((day.moon_illumination?.[0] ?? 0));
+  document.getElementById('moonPhase').textContent = phaseText;
+  document.getElementById('moonIllum').textContent = (illum == null) ? "n/a" : Math.round(illum);
   document.getElementById('sunset').textContent = day.sunset?.[0] ? fmtTime(day.sunset[0]) : "n/a";
-  // For now we show sunset as a proxy for astro dark; can swap to true -18° later
+
+  // (Placeholder) Using sunset as proxy. We can switch to true astronomical twilight later.
   document.getElementById('astroTwilight').textContent = day.sunset?.[0] ? fmtTime(day.sunset[0]) : "n/a";
 })().catch(console.error);
+
 
 
 // 3) Aurora Kp (NOAA SWPC)
@@ -72,27 +74,26 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
 })().catch(console.error);
 
 // 4) Air Quality / smoke proxy (Open-Meteo)
-// Tries the most recent hour; if null, walks backward up to 24 hours to find a real value.
+// Finds latest non-null values up to 24h back so it doesn't stick at 0.
 (async () => {
   const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LON}&hourly=pm10,pm2_5&timezone=auto`;
   const r = await fetch(url); const d = await r.json();
   const H = d.hourly || {};
-  const n = (H.time || []).length;
+  const times = H.time || [];
+  const n = times.length;
 
-  function latestNonNull(arr){
+  const lastNonNull = (arr) => {
     for (let i = n - 1; i >= Math.max(0, n - 24); i--) {
       const v = arr?.[i];
       if (v !== null && v !== undefined) return v;
     }
     return null;
-  }
+  };
 
-  const pm25v = latestNonNull(H.pm2_5);
-  const pm10v = latestNonNull(H.pm10);
+  const pm25v = lastNonNull(H.pm2_5);
+  const pm10v = lastNonNull(H.pm10);
 
-  document.getElementById('pm25').textContent =
-    pm25v === null ? "n/a" : Math.round(pm25v);
-
-  document.getElementById('pm10').textContent =
-    pm10v === null ? "n/a" : Math.round(pm10v);
+  document.getElementById('pm25').textContent = (pm25v == null) ? "n/a" : Math.round(pm25v);
+  document.getElementById('pm10').textContent = (pm10v == null) ? "n/a" : Math.round(pm10v);
 })().catch(console.error);
+
