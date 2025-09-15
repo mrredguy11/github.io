@@ -49,15 +49,17 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
   const url = `https://api.open-meteo.com/v1/astronomy?latitude=${LAT}&longitude=${LON}`
     + `&daily=sunrise,sunset,moon_phase,moon_phase_description,moon_illumination&timezone=auto`;
   const r = await fetch(url); const d = await r.json();
-  const day = d.daily;
+  const day = d.daily || {};
 
-  document.getElementById('moonPhase').textContent =
-    (day.moon_phase_description && day.moon_phase_description[0]) || day.moon_phase[0] || "n/a";
+  const phaseDesc = day.moon_phase_description?.[0];
+  const phaseCode = day.moon_phase?.[0];
 
-  document.getElementById('moonIllum').textContent = Math.round(day.moon_illumination[0] || 0);
-  document.getElementById('sunset').textContent = fmtTime(day.sunset[0]);
-  document.getElementById('astroTwilight').textContent = fmtTime(day.sunset[0]); 
-})();
+  document.getElementById('moonPhase').textContent = phaseDesc || phaseCode || "n/a";
+  document.getElementById('moonIllum').textContent = Math.round((day.moon_illumination?.[0] ?? 0));
+  document.getElementById('sunset').textContent = day.sunset?.[0] ? fmtTime(day.sunset[0]) : "n/a";
+  // For now we show sunset as a proxy for astro dark; can swap to true -18° later
+  document.getElementById('astroTwilight').textContent = day.sunset?.[0] ? fmtTime(day.sunset[0]) : "n/a";
+})().catch(console.error);
 
 
 // 3) Aurora Kp (NOAA SWPC)
