@@ -5,13 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dylly’s Astro Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-
-  <!-- Make webcams larger (overrides styles.css) -->
-  <style>
-    .cams{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px}
-    .cams img, .cams iframe{width:100%; height:260px; border:1px solid var(--edge); border-radius:10px; object-fit:cover}
-    figcaption{margin-top:6px; opacity:.85}
-  </style>
 </head>
 <body>
 <header>
@@ -20,11 +13,13 @@
 </header>
 
 <main class="grid">
+  <!-- Tonight's Forecast -->
   <section class="card">
     <h2>Tonight’s Forecast</h2>
     <div id="forecast">Loading…</div>
   </section>
 
+  <!-- Astronomy -->
   <section class="card">
     <h2>Astronomy</h2>
     <ul id="astro">
@@ -35,12 +30,14 @@
     </ul>
   </section>
 
+  <!-- Aurora -->
   <section class="card">
     <h2>Aurora</h2>
     <p>Planetary Kp: <strong id="kp">…</strong></p>
     <small>NOAA SWPC (latest)</small>
   </section>
 
+  <!-- Air Quality -->
   <section class="card">
     <h2>Air Quality / Smoke proxy</h2>
     <p>PM2.5 (µg/m³): <strong id="pm25">…</strong></p>
@@ -48,39 +45,65 @@
     <small>Open-Meteo Air Quality</small>
   </section>
 
- <section class="card">
-  <h2>Webcams</h2>
-  <div class="cams">
-    <!-- UCalgary All-Sky -->
-    <figure>
-      <a href="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG" target="_blank" rel="noopener">
-        <img src="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG"
-             alt="UCalgary All-Sky Cam" loading="lazy">
-      </a>
-      <figcaption>UCalgary All-Sky Cam</figcaption>
-    </figure>
+  <!-- Seeing & Transparency -->
+  <section class="card">
+    <h2>Seeing & Transparency</h2>
+    <div class="cams">
+      <figure>
+        <a href="https://www.meteoblue.com/en/weather/outdoorsports/seeing/calgary_canada_5913490" target="_blank" rel="noopener">
+          <img class="nocache"
+               src="https://my.meteoblue.com/visimage/meteogram/seeing?apikey=demo&lat=51.05&lon=-114.07&asl=1048&tz=America%2FEdmonton&lang=en"
+               alt="Seeing forecast (MeteoBlue)">
+        </a>
+        <figcaption>Seeing — Calgary (MeteoBlue)</figcaption>
+      </figure>
 
-    <!-- RAO Weather Cam 1 – NW view -->
-    <figure>
-      <a href="https://cam01.sci.ucalgary.ca/netcam/152/1.jpg" target="_blank" rel="noopener">
-        <img src="https://cam01.sci.ucalgary.ca/netcam/152/1.jpg"
-             alt="RAO Weather Cam 1 – NW view" loading="lazy">
-      </a>
-      <figcaption>RAO Weather Cam 1 – NW view</figcaption>
-    </figure>
+      <figure>
+        <a href="https://www.meteoblue.com/en/weather/outdoorsports/astronomy/calgary_canada_5913490" target="_blank" rel="noopener">
+          <img class="nocache"
+               src="https://my.meteoblue.com/visimage/meteogram/astronomy?apikey=demo&lat=51.05&lon=-114.07&asl=1048&tz=America%2FEdmonton&lang=en"
+               alt="Astronomy transparency (MeteoBlue)">
+        </a>
+        <figcaption>Transparency — Calgary (MeteoBlue)</figcaption>
+      </figure>
+    </div>
+  </section>
 
-    <!-- Springbank Airport – West view -->
-    <figure>
-      <a href="https://www.metcam.navcanada.ca/dawc_images/wxcam/CYBW/CYBW_W-full-e.jpeg" target="_blank" rel="noopener">
-        <img src="https://www.metcam.navcanada.ca/dawc_images/wxcam/CYBW/CYBW_W-full-e.jpeg"
-             alt="Springbank Airport – West view" loading="lazy">
-      </a>
-      <figcaption>Springbank Airport – West view</figcaption>
-    </figure>
-  </div>
-</section>
+  <!-- Webcams -->
+  <section class="card">
+    <h2>Webcams</h2>
+    <div class="cams">
+      <!-- UCalgary All-Sky -->
+      <figure>
+        <a href="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG" target="_blank" rel="noopener">
+          <img class="nocache"
+               src="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG"
+               alt="UCalgary All-Sky Cam">
+        </a>
+        <figcaption>UCalgary All-Sky Cam</figcaption>
+      </figure>
 
+      <!-- RAO Weather Cam 1 — NW -->
+      <figure>
+        <a href="https://cam01.sci.ucalgary.ca/netcam/152/1.jpg" target="_blank" rel="noopener">
+          <img class="nocache"
+               src="https://cam01.sci.ucalgary.ca/netcam/152/1.jpg"
+               alt="RAO Weather Cam 1 — NW view">
+        </a>
+        <figcaption>RAO Weather Cam 1 — NW view</figcaption>
+      </figure>
 
+      <!-- Springbank Airport — West -->
+      <figure>
+        <a href="https://www.metcam.navcanada.ca/dawc_images/wxcam/CYBW/CYBW_W-full-e.jpeg" target="_blank" rel="noopener">
+          <img class="nocache"
+               src="https://www.metcam.navcanada.ca/dawc_images/wxcam/CYBW/CYBW_W-full-e.jpeg"
+               alt="Springbank Airport — West view">
+        </a>
+        <figcaption>Springbank Airport — West view</figcaption>
+      </figure>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -90,4 +113,3 @@
 <script src="app.js"></script>
 </body>
 </html>
-
