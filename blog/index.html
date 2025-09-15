@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Blog • Dylly’s Astro Dashboard</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css" />
+  <!-- libs -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 </head>
@@ -21,7 +22,10 @@
   </header>
 
   <main class="blog-wrap">
+    <!-- Feed -->
     <section id="feed"></section>
+
+    <!-- Single post -->
     <article id="post" style="display:none">
       <a href="./" class="back">← Back</a>
       <h1 id="post-title"></h1>
@@ -36,7 +40,7 @@
     <small>© 2025 Dylly • Homebrew blog • Markdown + JS</small>
   </footer>
 
-  <script src="blog.js"></script>
   <script src="../starfield.js"></script>
+  <script src="blog.js"></script>
 </body>
 </html>
