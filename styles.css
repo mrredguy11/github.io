@@ -6,28 +6,23 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0; color:var(--fg);
-  background:var(--bg);
+  margin:0; color:var(--fg); background:var(--bg);
   font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
 }
 a{color:var(--accent); text-decoration:none}
 a:hover{text-decoration:underline}
+small{color:var(--muted)}
 
-/* Header / Footer */
-header, footer{
-  padding:18px 0; text-align:center;
-  border-bottom:2px solid var(--edge)
-}
+header,footer{padding:18px 0; text-align:center; border-bottom:2px solid var(--edge)}
 footer{border-top:2px solid var(--edge); border-bottom:none; opacity:.9}
 h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
 
 /* Main grid — desktop friendly */
 .grid{
-  max-width:1280px;          /* <— wider desktop width */
+  max-width:1280px;               /* wider content */
   margin:22px auto;
   padding:0 18px;
-  display:grid;
-  gap:18px;
+  display:grid; gap:18px;
   grid-template-columns: repeat(12, 1fr);
 }
 
@@ -41,35 +36,34 @@ h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
 .card h2{margin:0 0 10px; font-size:18px}
 
 /* Place sections on a 12-col grid (desktop) */
-.card:nth-of-type(1){ grid-column: span 4; } /* Tonight's Forecast */
-.card:nth-of-type(2){ grid-column: span 4; } /* Astronomy         */
-.card:nth-of-type(3){ grid-column: span 4; } /* Aurora            */
-.card:nth-of-type(4){ grid-column: span 4; } /* Air Quality       */
-.card:nth-of-type(5){ grid-column: span 8; } /* Webcams           */
+.card:nth-of-type(1){ grid-column: span 4; } /* Forecast */
+.card:nth-of-type(2){ grid-column: span 4; } /* Astronomy */
+.card:nth-of-type(3){ grid-column: span 4; } /* Aurora */
+.card:nth-of-type(4){ grid-column: span 4; } /* Air Quality */
+.card:nth-of-type(5){ grid-column: span 8; } /* Seeing/Transparency */
+.card:nth-of-type(6){ grid-column: 1 / -1; } /* Webcams full-width */
 
 /* Forecast table */
 #forecast table{width:100%; border-collapse:collapse; font-size:15px}
 #forecast th,#forecast td{
-  border-bottom:1px dashed var(--edge); padding:6px 4px; text-align:left
+  border-bottom:1px dashed var(--edge); padding:6px 4px; text-align:left;
 }
 
-/* --- Webcam layout boost --- */
+/* Reusable "cams" grid (also for MeteoBlue tiles) */
 .cams{
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); /* 2-up on desktop */
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   gap:16px;
 }
-.cams img, .cams iframe{
-  width:100%;
-  height:320px;           /* taller preview */
-  object-fit:cover;
-  border:1px solid var(--edge);
-  border-radius:10px;
-  background:#000;
+.cams figure{margin:0}
+.cams img,.cams iframe{
+  width:100%; height:320px; object-fit:cover;
+  border:1px solid var(--edge); border-radius:10px; background:#000;
 }
-/* Responsive fallbacks */
+figcaption{margin-top:6px; opacity:.85; font-size:14px}
+
+/* Responsive */
 @media (max-width: 900px){
   .grid{grid-template-columns:1fr}
-  .card{grid-column:1/-1}
+  .card{grid-column:1 / -1}
 }
-small{color:var(--muted)}
