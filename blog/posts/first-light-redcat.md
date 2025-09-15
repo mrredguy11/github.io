@@ -1,4 +1,4 @@
-![Rig](https://placehold.co/1200x600/png)
+![Multi-night stack](/photos/MultiNight.JPEG.jpg)
 
 Last night I finally pointed the **RedCat** at Cygnus under a hazy sky.  
 Even with a short integration (~45 minutes) the star shapes looked great.
