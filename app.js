@@ -72,10 +72,27 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
 })().catch(console.error);
 
 // 4) Air Quality / smoke proxy (Open-Meteo)
+// Tries the most recent hour; if null, walks backward up to 24 hours to find a real value.
 (async () => {
   const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LON}&hourly=pm10,pm2_5&timezone=auto`;
   const r = await fetch(url); const d = await r.json();
-  const idx = Math.max(0, d.hourly.time.length - 3); 
-  document.getElementById('pm25').textContent = Math.round(d.hourly.pm2_5[idx] ?? 0);
-  document.getElementById('pm10').textContent = Math.round(d.hourly.pm10[idx] ?? 0);
+  const H = d.hourly || {};
+  const n = (H.time || []).length;
+
+  function latestNonNull(arr){
+    for (let i = n - 1; i >= Math.max(0, n - 24); i--) {
+      const v = arr?.[i];
+      if (v !== null && v !== undefined) return v;
+    }
+    return null;
+  }
+
+  const pm25v = latestNonNull(H.pm2_5);
+  const pm10v = latestNonNull(H.pm10);
+
+  document.getElementById('pm25').textContent =
+    pm25v === null ? "n/a" : Math.round(pm25v);
+
+  document.getElementById('pm10').textContent =
+    pm10v === null ? "n/a" : Math.round(pm10v);
 })().catch(console.error);
