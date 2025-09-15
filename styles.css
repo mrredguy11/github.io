@@ -17,6 +17,8 @@ small{color:var(--muted)}
 header,footer{padding:18px 0; text-align:center; border-bottom:2px solid var(--edge)}
 footer{border-top:2px solid var(--edge); border-bottom:none; opacity:.9}
 h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
+.topnav{margin-top:8px}
+.topnav a{margin:0 8px; font-weight:600}
 
 /* Main grid */
 .grid{
