@@ -1,0 +1,15 @@
+[
+  {
+    "title": "First Light with the RedCat",
+    "date": "2025-09-14",
+    "slug": "first-light-redcat",
+    "tags": ["session log","imaging"],
+    "summary": "Quick notes from last night’s test run with the RedCat and ASI533."
+  },
+  {
+    "title": "Building my Astro Dashboard",
+    "date": "2025-09-10",
+    "slug": "building-astro-dashboard",
+    "tags": ["devlog","dashboard"]
+  }
+]
