@@ -53,19 +53,20 @@ h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
   border-bottom:1px dashed var(--edge); padding:6px 4px; text-align:left
 }
 
-/* Webcams — bigger tiles */
+/* --- Webcam layout boost --- */
 .cams{
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); /* 2-up on desktop */
   gap:16px;
 }
-.cams figure{margin:0}
-.cams img,.cams iframe{
-  width:100%; height:260px; object-fit:cover;
-  border:1px solid var(--edge); border-radius:10px; background:#000;
+.cams img, .cams iframe{
+  width:100%;
+  height:320px;           /* taller preview */
+  object-fit:cover;
+  border:1px solid var(--edge);
+  border-radius:10px;
+  background:#000;
 }
-figcaption{margin-top:6px; opacity:.85; font-size:14px}
-
 /* Responsive fallbacks */
 @media (max-width: 900px){
   .grid{grid-template-columns:1fr}
