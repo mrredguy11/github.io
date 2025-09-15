@@ -17,16 +17,16 @@ header,footer{padding:18px 0; text-align:center; border-bottom:2px solid var(--e
 footer{border-top:2px solid var(--edge); border-bottom:none; opacity:.9}
 h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
 
-/* Main grid — desktop friendly */
+/* Main grid */
 .grid{
-  max-width:1280px;               /* wider content */
+  max-width:1280px;
   margin:22px auto;
   padding:0 18px;
   display:grid; gap:18px;
   grid-template-columns: repeat(12, 1fr);
 }
 
-/* Cards */
+/* Card & placement helpers */
 .card{
   background:var(--panel);
   border:1px solid var(--edge);
@@ -35,13 +35,9 @@ h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
 }
 .card h2{margin:0 0 10px; font-size:18px}
 
-/* Place sections on a 12-col grid (desktop) */
-.card:nth-of-type(1){ grid-column: span 4; } /* Forecast */
-.card:nth-of-type(2){ grid-column: span 4; } /* Astronomy */
-.card:nth-of-type(3){ grid-column: span 4; } /* Aurora */
-.card:nth-of-type(4){ grid-column: span 4; } /* Air Quality */
-.card:nth-of-type(5){ grid-column: span 8; } /* Seeing/Transparency */
-.card:nth-of-type(6){ grid-column: 1 / -1; } /* Webcams full-width */
+.span4{grid-column: span 4;}
+.span8{grid-column: span 8;}
+.full {grid-column: 1 / -1;}
 
 /* Forecast table */
 #forecast table{width:100%; border-collapse:collapse; font-size:15px}
@@ -49,7 +45,7 @@ h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
   border-bottom:1px dashed var(--edge); padding:6px 4px; text-align:left;
 }
 
-/* Reusable "cams" grid (also for MeteoBlue tiles) */
+/* Reusable image grid (webcams / charts) */
 .cams{
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
@@ -62,8 +58,14 @@ h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
 }
 figcaption{margin-top:6px; opacity:.85; font-size:14px}
 
+/* Simple “button” link inside figure when embedding is blocked */
+.btn{
+  display:inline-block; padding:10px 14px; border:1px solid var(--accent);
+  border-radius:10px; text-align:center; font-weight:600;
+}
+
 /* Responsive */
 @media (max-width: 900px){
   .grid{grid-template-columns:1fr}
-  .card{grid-column:1 / -1}
+  .span4,.span8,.full{grid-column:1 / -1}
 }
