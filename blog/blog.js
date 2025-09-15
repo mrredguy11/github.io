@@ -1,7 +1,4 @@
-// Robust blog loader: works on Live Server and GitHub Pages.
-// - Feed: /blog/
-// - Single post: /blog/?p=slug  OR  /blog/#/slug
-
+// blog/blog.js — robust loader that strips YAML front-matter and renders markdown
 const FEED_EL = document.getElementById('feed');
 const POST_EL = document.getElementById('post');
 const TITLE_EL = document.getElementById('post-title');
@@ -13,7 +10,6 @@ const CONTENT_EL = document.getElementById('post-content');
 const POSTS_DIR = 'posts';
 const POSTS_JSON = `${POSTS_DIR}/posts.json`;
 
-// Helpers
 const html = String.raw;
 const esc = (s) => (s == null ? '' : String(s));
 
@@ -31,18 +27,23 @@ async function fetchJSON(url) {
   if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
   return r.json();
 }
-
 async function fetchText(url) {
   const r = await fetch(`${url}?t=${Date.now()}`, { cache: 'no-store' });
   if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
   return r.text();
 }
 
+// Remove a leading YAML front-matter block (--- ... ---) if present
+function stripFrontMatter(md) {
+  if (!md) return md;
+  const fm = /^\ufeff?---[\s\S]*?---\s*/; // handles BOM + front-matter at start
+  return md.replace(fm, '');
+}
+
 function renderFeed(posts) {
   POST_EL.style.display = 'none';
   FEED_EL.style.display = 'grid';
 
-  // newest first by date (YYYY-MM-DD or ISO)
   posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   FEED_EL.innerHTML = posts.map(p => html`
@@ -58,14 +59,9 @@ function renderFeed(posts) {
 
 function renderPostMeta(post) {
   TITLE_EL.textContent = post.title || 'Untitled';
-  DATE_EL.textContent = dayjs(post.date).format('YYYY-MM-DD');
-
-  TAGS_EL.innerHTML = (post.tags || [])
-    .map(t => `<span class="tag">${esc(t)}</span>`).join('');
-
-  HERO_EL.innerHTML = post.hero_image
-    ? `<img src="${esc(post.hero_image)}" alt="${esc(post.title)}" />`
-    : '';
+  DATE_EL.textContent = post.date ? dayjs(post.date).format('YYYY-MM-DD') : '';
+  TAGS_EL.innerHTML = (post.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+  HERO_EL.innerHTML = post.hero_image ? `<img src="${esc(post.hero_image)}" alt="${esc(post.title)}" />` : '';
 }
 
 async function renderPost(slug, posts) {
@@ -81,13 +77,24 @@ async function renderPost(slug, posts) {
     return;
   }
 
+  // fetch markdown by slug
   const mdPath = `${POSTS_DIR}/${post.slug}.md`;
-  const md = await fetchText(mdPath);
+  let md = '';
+  try {
+    md = await fetchText(mdPath);
+  } catch (e) {
+    console.error('Markdown fetch failed:', e);
+    FEED_EL.style.display = 'none';
+    POST_EL.style.display = 'block';
+    renderPostMeta(post);
+    CONTENT_EL.innerHTML = `<p>Could not load the post content (<code>${esc(mdPath)}</code>).</p>`;
+    return;
+  }
 
+  // strip YAML front-matter so only the article shows
+  const body = stripFrontMatter(md || '');
   renderPostMeta(post);
-
-  // Render markdown
-  CONTENT_EL.innerHTML = marked.parse(md);
+  CONTENT_EL.innerHTML = marked.parse(body);
 
   FEED_EL.style.display = 'none';
   POST_EL.style.display = 'block';
@@ -96,15 +103,12 @@ async function renderPost(slug, posts) {
 async function main() {
   try {
     const posts = await fetchJSON(POSTS_JSON);
-
     const slug = getSlugFromURL();
     if (slug) {
       await renderPost(slug, posts);
     } else {
       renderFeed(posts);
     }
-
-    // support client-side nav: switching hash should load the post
     window.addEventListener('hashchange', () => {
       const s = getSlugFromURL();
       if (s) renderPost(s, posts);
@@ -112,7 +116,7 @@ async function main() {
     });
   } catch (e) {
     console.error('Blog load error:', e);
-    FEED_EL.innerHTML = `<p>Failed to load the blog. Check console for details.</p>`;
+    FEED_EL.innerHTML = `<p>Failed to load the blog index. Check console for details.</p>`;
   }
 }
 
