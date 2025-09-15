@@ -48,20 +48,25 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
 (async () => {
   const url = `https://api.open-meteo.com/v1/astronomy?latitude=${LAT}&longitude=${LON}` +
               `&daily=sunrise,sunset,moon_phase,moon_phase_description,moon_illumination&timezone=auto`;
-  const r = await fetch(url); const d = await r.json();
-  const day = d.daily || {};
+  let day = {};
+  try {
+    const r = await fetch(url);
+    const d = await r.json();
+    day = d?.daily || {};
+  } catch (e) {
+    console.error('Astronomy fetch failed', e);
+  }
 
   const phaseText = day.moon_phase_description?.[0] || day.moon_phase?.[0] || "n/a";
   const illum = day.moon_illumination?.[0];
+  const sunsetISO = day.sunset?.[0];
 
   document.getElementById('moonPhase').textContent = phaseText;
   document.getElementById('moonIllum').textContent = (illum == null) ? "n/a" : Math.round(illum);
-  document.getElementById('sunset').textContent = day.sunset?.[0] ? fmtTime(day.sunset[0]) : "n/a";
-
-  // (Placeholder) Using sunset as proxy. We can switch to true astronomical twilight later.
-  document.getElementById('astroTwilight').textContent = day.sunset?.[0] ? fmtTime(day.sunset[0]) : "n/a";
-})().catch(console.error);
-
+  document.getElementById('sunset').textContent = sunsetISO ? fmtTime(sunsetISO) : "n/a";
+  // Placeholder for true -18° astronomical twilight (we’ll wire this later)
+  document.getElementById('astroTwilight').textContent = sunsetISO ? fmtTime(sunsetISO) : "n/a";
+})();
 
 
 // 3) Aurora Kp (NOAA SWPC)
