@@ -3,22 +3,23 @@ const LAT = 51.178;   // example
 const LON = -115.571; // example
 const TZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-document.getElementById('loc').textContent = `Lat ${LAT.toFixed(3)}, Lon ${LON.toFixed(3)} • ${TZONE}`;
+document.getElementById('loc').textContent =
+  `Lat ${LAT.toFixed(3)}, Lon ${LON.toFixed(3)} • ${TZONE}`;
 
 const fmtTime = (iso) => new Date(iso).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', month:'short', day:'numeric'});
 
 // 1) Weather / clouds (Open-Meteo)
 (async () => {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}`
-    + `&hourly=cloud_cover,precipitation_probability,wind_speed_10m&forecast_days=2&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}` +
+              `&hourly=cloud_cover,precipitation_probability,wind_speed_10m&forecast_days=2&timezone=auto`;
   const r = await fetch(url); const d = await r.json();
 
   const rows = [];
   const now = Date.now();
-  for (let i=0;i<d.hourly.time.length;i++){
+  for (let i = 0; i < d.hourly.time.length; i++) {
     const t = new Date(d.hourly.time[i]);
-    if (t.getTime() < now) continue;                     // future hours only
+    if (t.getTime() < now) continue;                 // future hours only
     if (t.getHours() < 18 && t.getHours() > 6) continue; // evening/night focus
     rows.push({
       time: t,
@@ -64,10 +65,9 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
   document.getElementById('moonPhase').textContent = phaseText;
   document.getElementById('moonIllum').textContent = (illum == null) ? "n/a" : Math.round(illum);
   document.getElementById('sunset').textContent = sunsetISO ? fmtTime(sunsetISO) : "n/a";
-  // Placeholder for true -18° astronomical twilight (we’ll wire this later)
+  // Placeholder for true -18° astronomical twilight (swap later)
   document.getElementById('astroTwilight').textContent = sunsetISO ? fmtTime(sunsetISO) : "n/a";
-})();
-
+})().catch(console.error);
 
 // 3) Aurora Kp (NOAA SWPC)
 (async () => {
@@ -81,7 +81,8 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
 // 4) Air Quality / smoke proxy (Open-Meteo)
 // Finds latest non-null values up to 24h back so it doesn't stick at 0.
 (async () => {
-  const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LON}&hourly=pm10,pm2_5&timezone=auto`;
+  const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LON}` +
+              `&hourly=pm10,pm2_5&timezone=auto`;
   const r = await fetch(url); const d = await r.json();
   const H = d.hourly || {};
   const times = H.time || [];
@@ -102,24 +103,15 @@ const fmtDate = (iso) => new Date(iso).toLocaleString([], {weekday:'short', mont
   document.getElementById('pm10').textContent = (pm10v == null) ? "n/a" : Math.round(pm10v);
 })().catch(console.error);
 
-// 5) Transparency and seeing
-<section class="card">
-  <h2>Seeing & Transparency</h2>
-  <div class="cams">
-    <figure>
-      <a href="https://www.meteoblue.com/en/weather/outdoorsports/seeing/calgary_canada_5913490" target="_blank" rel="noopener">
-        <img src="https://my.meteoblue.com/visimage/meteogram/seeing?apikey=demo&lat=51.05&lon=-114.07&asl=1048&tz=America%2FEdmonton&lang=en" 
-             alt="Seeing forecast (MeteoBlue)" class="nocache">
-      </a>
-      <figcaption>Seeing forecast – Calgary (MeteoBlue)</figcaption>
-    </figure>
-
-    <figure>
-      <a href="https://www.meteoblue.com/en/weather/outdoorsports/astronomy/calgary_canada_5913490" target="_blank" rel="noopener">
-        <img src="https://my.meteoblue.com/visimage/meteogram/astronomy?apikey=demo&lat=51.05&lon=-114.07&asl=1048&tz=America%2FEdmonton&lang=en" 
-             alt="Astronomy transparency (MeteoBlue)" class="nocache">
-      </a>
-      <figcaption>Transparency forecast – Calgary (MeteoBlue)</figcaption>
-    </figure>
-  </div>
-</section>
+// 5) Auto-refresh images that have class="nocache" (webcams + MeteoBlue)
+// Busts cache with a timestamp query every 5 minutes
+function refreshWebcams(){
+  const imgs = document.querySelectorAll('img.nocache');
+  const ts = Date.now();
+  imgs.forEach(img => {
+    const base = img.src.split('?')[0];
+    img.src = `${base}?t=${ts}`;
+  });
+}
+refreshWebcams();
+setInterval(refreshWebcams, 5 * 60 * 1000);
