@@ -2,6 +2,7 @@
 :root{
   --bg:#0b0b0b; --panel:#121212; --fg:#e8ffe8;
   --muted:#9ad39a; --accent:#40ff9c; --edge:#262626;
+  --good:#2bd275; --ok:#ffcc4d; --bad:#ff5c5c;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -58,7 +59,33 @@ h1{margin:0 0 6px; font-family:ui-monospace,Consolas,Monaco,monospace}
 }
 figcaption{margin-top:6px; opacity:.85; font-size:14px}
 
-/* Simple “button” link inside figure when embedding is blocked */
+/* “Last updated” line */
+.updated{display:block; margin-top:10px; opacity:.75}
+
+/* Summary bar (Tonight at a glance) */
+.summary h2{margin-bottom:10px}
+.kpi-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap:12px;
+}
+.kpi{
+  background:#0f0f0f; border:1px solid var(--edge);
+  padding:10px; border-radius:10px;
+}
+.kpi .label{font-size:13px; color:var(--muted)}
+.kpi .value{font-size:18px; font-weight:600}
+.kpi .badge{
+  display:inline-block; margin-top:6px; padding:2px 8px; border-radius:999px;
+  font-size:12px; font-weight:700; color:#000;
+  background:var(--muted); /* default */
+}
+.kpi.good  .badge{background:var(--good)}
+.kpi.ok    .badge{background:var(--ok)}
+.kpi.bad   .badge{background:var(--bad)}
+.kpi.muted .badge{display:none}
+
+/* Button tile (for 511 link) */
 .btn{
   display:inline-block; padding:10px 14px; border:1px solid var(--accent);
   border-radius:10px; text-align:center; font-weight:600;
@@ -69,3 +96,4 @@ figcaption{margin-top:6px; opacity:.85; font-size:14px}
   .grid{grid-template-columns:1fr}
   .span4,.span8,.full{grid-column:1 / -1}
 }
+
