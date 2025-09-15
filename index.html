@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dylly’s Astro Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Make webcams larger (overrides styles.css) -->
+  <style>
+    .cams{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px}
+    .cams img, .cams iframe{width:100%; height:260px; border:1px solid var(--edge); border-radius:10px; object-fit:cover}
+    figcaption{margin-top:6px; opacity:.85}
+  </style>
 </head>
 <body>
 <header>
@@ -44,15 +51,39 @@
   <section class="card">
     <h2>Webcams</h2>
     <div class="cams">
-      <!-- Replace these with real webcam URLs/images -->
+      <!-- UCalgary All-Sky -->
       <figure>
-  <img src="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG" 
-       alt="UCalgary All-Sky Cam" />
-  <figcaption>UCalgary All-Sky Cam</figcaption>
-</figure>
+        <img src="https://cam01.sci.ucalgary.ca/AllSkyCam/AllSkyCurrentImage.JPG"
+             alt="UCalgary All-Sky Cam" loading="lazy" />
+        <figcaption>UCalgary All-Sky Cam</figcaption>
+      </figure>
+
+      <!-- Banff Ave (DriveBC snapshot) -->
       <figure>
-        <img src="https://example.com/webcam2.jpg" alt="Webcam 2" />
-        <figcaption>Summit Cam</figcaption>
+        <img src="https://images.drivebc.ca/bchighwaycam/pub/cameras/683.jpg"
+             alt="Banff Ave Webcam" loading="lazy" />
+        <figcaption>Banff Ave Webcam</figcaption>
+      </figure>
+
+      <!-- Lake Louise Village (DriveBC snapshot) -->
+      <figure>
+        <img src="https://images.drivebc.ca/bchighwaycam/pub/cameras/684.jpg"
+             alt="Lake Louise Village Webcam" loading="lazy" />
+        <figcaption>Lake Louise Village Webcam</figcaption>
+      </figure>
+
+      <!-- Nakiska / Kananaskis -->
+      <figure>
+        <img src="https://nakiska.com/webcams/cam1.jpg"
+             alt="Nakiska Kananaskis Webcam" loading="lazy" />
+        <figcaption>Nakiska – Kananaskis</figcaption>
+      </figure>
+
+      <!-- Marmot Basin / Jasper -->
+      <figure>
+        <img src="https://marmotbasin.com/webcams/cam1.jpg"
+             alt="Marmot Basin Jasper Webcam" loading="lazy" />
+        <figcaption>Marmot Basin – Jasper</figcaption>
       </figure>
     </div>
   </section>
@@ -65,3 +96,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+
